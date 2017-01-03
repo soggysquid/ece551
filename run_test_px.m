@@ -1,5 +1,6 @@
 % Test 1: Look at latency and error in periodogram for different lengths N
 clear
+rng(321)
 M=1; % Number simulations to do
 b = 32;  % output width
 sample_width=16;
@@ -14,7 +15,7 @@ doplot=0;
 deltaf = 5/2; % ignore this, it's junk, todo remove deltaf from call to setup
 delta1_sq = 2^(-2*sample_width)/12;
 Nmat = [8,9,10,11,12,13];
-scaling = 3;
+scaling = 1;
 % Px_mse = zeros(length(Nmat));
 % Pb_mse = Px_mse;
 % Px3_mse = Px_mse;
@@ -25,40 +26,37 @@ blkexpvect=ratio1;
 lat = ratio1;
 K = ratio1;
 Vxdelta = ratio1;
+width_out = 32;
 for i = 1:M
     ax=1;
 for N = Nmat
     L = N;
-    setup(b, source, N, L, w, alpha, deltaf, scaling);
+    setup(source, width_out, N, L, w, scaling, alpha);
     % setup(b, source, N, L, w, alpha);
     load(parfile);
+    load(vectfile);
     x = x + rand(size(x)) + 1j*rand(size(x));
     % matfile = ['s', int2str(source), 'w', int2str(w)...
     %     'N', int2str(N), 'L', int2str(L), 'b', int2str(b),...
     %     'alpha', int2str(alpha), 'scale', int2str(scaling)];
     % save([dir, '/', matfile, '_no2']);
-    if scaling == 3
-        sim('bart_block_floating_point')    
-    else
-        sim('bart_block');     
-    end
-    
+    sim('bart_block');     
     % fixpoint_analysis;
     get_sim_results
-    sfactor = 1/2^(N-blkexp);
+    % sfactor = 1/2^(N-blkexp);
     blkexpvect(ax) = blkexp;
-    Xf = Xf(:,1,2);
-    Xf = Xf*sfactor;
-    Px = Px(:,1,2);                 
-    Xf2 = fft(xwin(:,1,2),Nfft);
-    Xf2 = Xf2/Nfft;
+    % Xf = Xf(:,1,1);
+    % Xf = Xf*sfactor;            
+    Xf2 = fft(xwin,Nfft);
+    % Xf2 = Xf2/Nfft;
+    Xf=Xf*Nfft;
     % Xf2 = Xf2(:,1,2);
-    Px2 = Xf2.*conj(Xf2);
-    xwin = xwin(:,1,2);
-    K(ax) = 1/Nfft*sum(xwin.*conj(xwin));
-    err1 =  sqrt(sum((Xf-Xf2).*conj(Xf-Xf2)))./sqrt(K(ax));
-    % K(ax) = sum(xwin.*conj(xwin))/Nfft;
+    Px2 = Xf2/Nfft.*conj(Xf2)/Nfft;
+    % xwin = xwin(:,1,2);
+    K(ax) = sum(xwin.*conj(xwin));
+    % err1 =  sqrt(sum((Xf-Xf2).*conj(Xf-Xf2)))./sqrt(K(ax));
     % err1 =  sqrt(sum((Xf-Xf2).*conj(Xf-Xf2)))./sqrt(K(ax)*Nfft);
+    err1 = sqrt(sum((Xf-Xf2).*conj(Xf-Xf2))./(Nfft*K(ax)));
     % err2 = sum(abs(Px-Px2))./sqrt(K(ax));
     err2 = sum(abs(Px-Px2))/var(xwin);
     ratio1(ax) = ratio1(ax) + err1;
@@ -84,23 +82,23 @@ scatter(Nmat,log2(ratio1),'*');
 hold('on')
 if scaling == 3
     plot(Nmat,log2(uubound));
-    legend('error', 'upper-upper bound')
+    % title('FFT with scaling ');
 else
-    plot(Nmat,(log2(lubound)));
-    legend('error', 'lower-upper bound');
+    plot(Nmat,log2(lubound));
+    % title('FFT with out scaling ');
 end
+legend('error', 'theoretical upper bound')
 clear title;
-title('Rms(err)/rms(result) FFT ');
-xlabel('log2(Nfft)')
+xlabel('M')
 set(gca, 'XTick', Nmat)
 ylabel('rms(err)/rms(result)')
 print([dir, '/test1_log2mse.png'], '-dpng');
-figure(2)
-scatter(Nmat,ratio2,'*');
-title('Rms(err)/rms(result) PSD ');
+% figure(2)
+% scatter(Nmat,ratio2,'*');
+% title('Rms(err)/rms(result) PSD ');
 figure(3)
 scatter(Nmat,lat./(2.^Nmat)');
-title('Ratio of latency and FFT points');
+% title('Ratio of latency and FFT points');
 xlabel('log2(Nf ft)');
 set(gca, 'XTick', Nmat)
 ylabel('cycles/Nfft');

@@ -38,6 +38,9 @@ function [x,fs] = create_test_vector(source, Nfft, L, alpha, xmin, deltaf, dir)
 %     nsect = length(x)/Nfft;    
 %     x = reshape(x,[Nfft,nsect,ncols]);
 % elseif source == 3   % Slot test
+if ~exist('Nmax')
+    Nmax = 13;
+end
 vectfile = [dir, '/testvector'];
 assignin('base', 'vectfile', vectfile)
 if source == 3
@@ -115,7 +118,7 @@ elseif source == 9 | source == 10 | source == 12
     else
         x = zeros(1,Nfft);
     end
-    ncols = 2;
+    ncols = 1;
     nsect = P/Nfft;
     % x = x + 1j*x;
     x = repmat(x', [1,nsect,ncols]);     
@@ -153,6 +156,7 @@ nfft_valid_ts = timeseries(nfft_valid, [1:xlength]);
 % by fft core which might munge the first frame
 xr_ts = timeseries([real(x(1)); real(x(:))], [1:xlength+1]); 
 xi_ts = timeseries([imag(x(1)); imag(x(:))], [1:xlength+1]);
-xv_ts = timeseries(ones(xlength+2,1),[1:xlength+2]);
+xv_ts = timeseries(ones(xlength+1,1),[1:xlength+1]);
+% xv_ts = timeseries([ones(3,1);zeros(xlength-3,1)],[1:xlength]);
 Ts = 1/fs;
 save(vectfile)
