@@ -1,4 +1,24 @@
-function [x,fs] = create_test_vector(source, Nfft, L, alpha, xmin, deltaf, dir)
+function [x,findex,fs] = create_test_vector(source, Nfft, L, alpha, xmin, deltaf, dir)
+% source:
+%   1: iq .dat
+%   2: Stephen's csv 
+%   3: slot test
+%   4: one tone in bin
+%   5: two tones in bin
+%   6: one tone between bins
+%   7: two tones out of bin
+%   8: impulse
+%   9: all ones*A1
+%   10: all zeros
+%   11: a bunch of tones at harmonics of the sampling frequency
+%   12: complex uniform random numbers between 0 and 1
+% Nfft: length of fft
+% L: log2(length of data)
+% alpha: should be sigma, guassian noise source
+% xmin: min amplitude of second tone if there is one
+% deltaf: of second tone if there is one
+% dir: where to save the vect file
+
 % if source == 0 || source == 1
 %     fs = 48e6;
 %     fc = fs/2;
@@ -73,7 +93,7 @@ elseif source >= 4 & source < 8  % tones
         A1 = 1;
         A1 = 1-xmin;
         A2 = max(xmin,alpha);
-        f1 = 1/8;
+        f1 = 1/2;
         f2 = f1+deltaf;     
         x = A1*cos(2*pi*n*f1) + 1j*A1*sin(2*pi*n*f1);
         if source == 5
@@ -82,7 +102,7 @@ elseif source >= 4 & source < 8  % tones
         x = x/max(max(abs(x)));
     elseif source == 6
         A1 = 1;
-        f1 = 1/8 + 0.5/Nfft;
+        f1 = 1/2 + 0.5/Nfft;
         x = A1*(cos(2*pi*n*f1)+1j*sin(2*pi*n*f1));
         % x = A1*cos(2*pi*n*f1);
     elseif source == 7
