@@ -93,7 +93,7 @@ elseif source >= 4 & source < 8  % tones
         A1 = 1;
         A1 = 1-xmin;
         A2 = max(xmin,alpha);
-        f1 = 1/2;
+        f1 = 1/8;
         f2 = f1+deltaf;     
         x = A1*cos(2*pi*n*f1) + 1j*A1*sin(2*pi*n*f1);
         if source == 5
@@ -102,7 +102,7 @@ elseif source >= 4 & source < 8  % tones
         x = x/max(max(abs(x)));
     elseif source == 6
         A1 = 1;
-        f1 = 1/2 + 0.5/Nfft;
+        f1 = 1/8 + 0.5/Nfft;
         x = A1*(cos(2*pi*n*f1)+1j*sin(2*pi*n*f1));
         % x = A1*cos(2*pi*n*f1);
     elseif source == 7

@@ -79,7 +79,7 @@ Px2 = circshift(Px2, Nfft/2-1);
 Px2_b = circshift(Px2_b, Nfft/2-1);
 Px3 = circshift(Px3, Nfft/2-1);
 Px3_b = circshift(Px3_b, Nfft/2-1);
-findex = [-2^(N-1)+1:2^(N-1)]'/(Ts*2^N);
+% findex = [-2^(N-1)+1:2^(N-1)]'/(Ts*2^N);
 if doplot
    figure(1)
    % subplot(2,1,1)

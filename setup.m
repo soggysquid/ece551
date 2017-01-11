@@ -34,16 +34,15 @@ function setup(source, width_out, N, L, w, scaling, alpha)
 switch nargin
     case 0
         % set width_out to 0 to use full precision
-        width_out = 32;
-        source = 5;
+        width_out = 64;
+        source = 6;
         N = 10;  % Length of FFT, must be < L
-        L = 13;  % Length of sample
+        L = 10;  % Length of sample
         w = 0;
         % alpha = 2^-15;
         alpha = 0.0;
-        scaling = 3;
+        scaling = 1;
 end
-width_out = 32;
 if ~exist('xmin')
     xmin = 2^-8;
 end
