@@ -28,8 +28,8 @@ function setup(source, width_out, N, L, w, scaling, alpha)
 % alpha: noise variance
 % scaling: 
 %   1: full precision
-%   2: scale periodogram
-%   3: block floating point scaling
+%   2: n/a
+%   3: block floating point 
 
 switch nargin
     case 0
@@ -79,6 +79,13 @@ Nfft = 2^N;
 usemex = 0;
 % bp_reinterp = bp_fft+Nmax;
 % width_perio = width_fft*2-1; % full precision  
+% factors to put in ROM for Welch algorithm
+% PWelch size FFT size is half Nmax because we have two of them
+nt = [0:Nmax/2-1]
+twiddles = exp(-j*pi*n/Nmax);
+realtwiddle = real(twiddles);
+imagtwiddle = imag(twiddles);
+
 if scaling == 1
     width_fft = sample_width+Nmax;  % this is the unsigned width
     bp_fft = sample_width-1;
