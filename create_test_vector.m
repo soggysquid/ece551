@@ -63,11 +63,12 @@ if ~exist('Nmax')
 end
 vectfile = [dir, '/testvector'];
 assignin('base', 'vectfile', vectfile)
+fs = 10e3*Nmax;
 if source == 3
     % Figure out why there is a DC value (has to do with the way I'm
     % rounding)
     P = 2^L;
-    fs = Nfft*10e3;
+    % fs = Nfft*10e3;
     fc = 0;
     k0 = 1/64*Nfft;
     x = slot(Nfft, k0);
@@ -87,7 +88,7 @@ elseif source >= 4 & source < 8  % tones
     ncols = 1;
     % n = 0:Nfft;
     n = 0:P-1;
-    fs = 10e3*Nfft;
+    % fs = 10e3*Nfft;
     fc = 0;
     if source == 4 | source == 5
         A1 = 1;
@@ -116,7 +117,7 @@ elseif source >= 4 & source < 8  % tones
     % x = repmat(x(1:end-1)',[1,nsect]);
     x = reshape(x,[Nfft,nsect]);
 elseif source == 8
-    fs = Nmax*10e3;
+    % fs = Nmax*10e3;
     fc = 0;
     n=[1:Nfft];
     P = 2^L;
@@ -126,7 +127,7 @@ elseif source == 8
     ncols = 1;
     x = repmat(x', [1,nsect]); 
 elseif source == 9 | source == 10 | source == 12
-    fs = Nmax*10e3;
+    % fs = Nmax*10e3;
     A1 = 0.5;
     fc = 0;
     n=[1:Nfft];
@@ -143,7 +144,7 @@ elseif source == 9 | source == 10 | source == 12
     % x = x + 1j*x;
     x = repmat(x', [1,nsect,ncols]);     
 elseif source == 11
-    fs = Nmax*10e3;
+    % fs = Nmax*10e3;
     fc = 0;
     k = [1:10];
     A = 1/10;

@@ -23,7 +23,7 @@ function setup(source, width_out, N, L, w, scaling, alpha)
 % w: window to use
 %   0: rectangular
 %   1: kaiser
-%   2: hamming
+%   2: hanning
 %   3: blackman
 % alpha: noise variance
 % scaling: 
@@ -34,13 +34,15 @@ function setup(source, width_out, N, L, w, scaling, alpha)
 switch nargin
     case 0
         % set width_out to 0 to use full precision
-        width_out = 64;
-        source = 6;
-        N = 10;  % Length of FFT, must be < L
-        L = 10;  % Length of sample
+        width_out = 0;
+        source = 4;
+        Delta = 2/2^16;
+        alpha = sqrt(2^10*Delta^2);
+        N = 13;  % Length of FFT, must be < L
+        L = 13;  % Length of sample
         w = 0;
         % alpha = 2^-15;
-        alpha = 0.0;
+        % alpha = 0.0;
         scaling = 1;
 end
 if ~exist('xmin')
@@ -56,7 +58,7 @@ end
 sources = {' iq .dat ', ' usrp ', ...
     ' slot ', ' 1 tone in bin ', ' 2 tones in bins ', ' 1 inter-bin tone ',...
     ' 2 inter-bin tones ', 'impulse', 'all ones', 'all zeros'}; 
-wins = {'rect', 'kaiser', 'hamming', 'blackman'};
+wins = {'rect', 'kaiser', 'hanning', 'blackman'};
 Nmax = 13; % log2 of max points of run-time configurable FFT
 bartmax = Nmax-3;  % max number segments we can average 
 latency = 25000;
@@ -122,8 +124,8 @@ if w == 1
     win = kaiser(Nfft+1,9);
     Ewin = sum(kaiser(Nmax+1,9).^2)/Nmax;
 elseif w == 2
-    win = hamming(Nfft+1);
-    Ewin = sum(hamming(Nmax+1).^2)/Nmax;
+    win = hanning(Nfft+1);
+    Ewin = sum(hanning(Nmax+1).^2)/Nmax;
 elseif w == 3
     win = blackman(Nfft+1);
     Ewin = sum(blackman(Nmax+1).^2)/Nmax;

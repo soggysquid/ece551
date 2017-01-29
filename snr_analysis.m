@@ -1,19 +1,57 @@
-rng=123;
-b = 16;         % ADC width, signed
-Delta = 4/2^b;
-alpha = sqrt(Delta^2/12);   % Set alpha to variance of quantization noise
-width_out = 0;   % width_out 0 is full-precision
-N = 10;
-L = 10;
-w = 0;
-source = 4;
-scaling = 0;
-setup(source, width_out, N, L, w, scaling, alpha)
-load(parfile)
-load(vectfile)
-matfile = ['s', int2str(source), 'w', int2str(w)...
-        'N', int2str(N), 'L', int2str(L), 'widthout', int2str(width_out),...
-        'alpha', num2str(alpha), 'scale', int2str(scaling)];
-sim('bart_block');
-get_sim_results;
-save([dir, '/', matfile]);
+% For a given confugration (scaled or unscaled), test with different params 
+runSim=0; % Set to 0 if simulations have already been run and you need to load files
+windows = [0,2,3];  % rect, hann, Black
+widths = [0]; % precision of output
+sample_width = 16;         % ADC width, signed
+fftlength = [8,10,12];
+averaging = [0];
+sourceList = [4, 6];
+Delta = 2/2^16;
+alphaList = [sqrt(2^10*Delta)];
+scaling = 1;
+
+thisDir = [date, '/full_precision_perio'];
+if ~exist(dir, 'dir')
+    mkdir(dir)
+end
+for w=windows 
+    for width_out = widths
+        for M = fftlength
+            for avg = averaging
+                for alpha = alphaList
+                    for source = sourceList
+                        L = M-avg;
+                        matfile = ['s', int2str(source), 'w', int2str(w)...
+                                   'N', int2str(N), 'L', int2str(L), 'widthout', int2str(width_out),...
+                                   'alpha', num2str(alpha), 'scale', int2str(scaling),'.mat'];
+                        if runSim
+                            rng=123;
+                            setup(source, width_out, M, L, w, scaling, alpha)
+                            load(parfile)
+                            load(vectfile)
+                            sim('bart_block');
+                            get_sim_results;
+                            save([thisDir, '/', matfile]);
+                        else
+                            load([thisDir, '/', matfile]);
+                        end
+                        if source ==4
+                            if w == 0
+                                bw = 0.89*2*pi/N;
+                            elseif w == 2
+                                deltaw = 1.44*2*pi/N;
+                            else
+                                deltaw = 1.68*2*pi/N;
+                            end
+                            [maxPx, imax] = max(Px);
+                            fc = findex(imax);
+                            mask = find(findex<(fc-bw/2) | findex>(fc+bw/2));
+                            varPxx = var(Px(mask));
+                            meanPxx = mean(Px(mask));
+                            
+                    end
+                end
+            end
+        end
+    end
+end
