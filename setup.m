@@ -45,6 +45,7 @@ switch nargin
 end
 if ~exist('xmin')
     xmin = 2^-8;
+    xmin=0;
 end
 if ~exist('alpha')
     alpha = 0;
@@ -81,10 +82,10 @@ usemex = 0;
 % width_perio = width_fft*2-1; % full precision  
 % factors to put in ROM for Welch algorithm
 % PWelch size FFT size is half Nmax because we have two of them
-nt = [0:Nmax/2-1]
-twiddles = exp(-j*pi*n/Nmax);
-realtwiddle = real(twiddles);
-imagtwiddle = imag(twiddles);
+% nt = [0:Nmax/2-1]
+% twiddles = exp(-j*pi*n/Nmax);
+% realtwiddle = real(twiddles);
+% imagtwiddle = imag(twiddles);
 
 if scaling == 1
     width_fft = sample_width+Nmax;  % this is the unsigned width
@@ -93,13 +94,17 @@ if scaling == 1
     bp_reinterp = bp_fft;
     bp_perio = bp_fft*2;  
 else
-    width_fft = sample_width;
-    bp_fft = width_fft-1;
+    width_fft = sample_width+Nmax+1;
+    bp_fft = width_fft-2;
     bp_perio = bp_fft*2;  
+    bp_reinterp = bp_fft;
 %    width_out = 0; 
 end
 width_perio = width_fft*2+1;
 width_fpadd = width_perio+bartmax;
+if ~width_out
+    width_out=width_fpadd;
+end
 bp_fpadd = bp_perio;
 bp_out = max(width_out-(width_fpadd-bp_fpadd),0);
 % bp_out = bp_fpadd+bartmax;

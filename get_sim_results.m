@@ -30,8 +30,6 @@ Px = Px/2^(2*(N-blkexp))*1/2^(L-N);
 % else
 %     blkexp = 0;
 % end
-sfactor = 1/2^(N-blkexp);
-Xf = Xf*sfactor;
 if ~exist('ncols','var')
     ncols = 1;
 end
