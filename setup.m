@@ -1,7 +1,7 @@
 % Script to setup all the parameters and teuntitledst vectors that we're going to
 % use for modelling and analysis
 % clearvars -except latency sample_width twiddle_width;
-function setup(source, width_out, N, L, w, scaling, alpha)
+function setup(source, width_out, N, L, w, hwver, alpha)
 % sample-width: fft sample width (adc width is fixed)
 % width_out: width of output
 % source: data set to use
@@ -26,24 +26,25 @@ function setup(source, width_out, N, L, w, scaling, alpha)
 %   2: hanning
 %   3: blackman
 % alpha: noise variance
-% scaling: 
+% hwver: 
 %   1: full precision
-%   2: n/a
+%   2: block floating point with spectral smoothing
 %   3: block floating point 
 
 switch nargin
     case 0
         % set width_out to 0 to use full precision
         width_out = 0;
-        source = 4;
+        source = 6;
         Delta = 2/2^16;
-        alpha = sqrt(2^10*Delta^2);
-        N = 13;  % Length of FFT, must be < L
+        % alpha = sqrt(2^10*Delta^2); % This is a great value, don't erase
+        alpha = 0.1;
+        N = 10;  % Length of FFT, must be < L
         L = 13;  % Length of sample
-        w = 0;
+        w = 1;
         % alpha = 2^-15;
         % alpha = 0.0;
-        scaling = 1;
+        hwver = 3;
 end
 if ~exist('xmin')
     xmin = 2^-8;
@@ -89,21 +90,31 @@ usemex = 0;
 % realtwiddle = real(twiddles);
 % imagtwiddle = imag(twiddles);
 
-if scaling == 1
+if hwver == 1
     width_fft = sample_width+Nmax;  % this is the unsigned width
     bp_fft = sample_width-1;
     bp_fft = bp_fft+Nmax;
-    bp_reinterp = bp_fft;
     bp_perio = bp_fft*2;  
-else
+    width_perio = width_fft*2+1;
+    width_fpadd = width_perio+bartmax;
+    bp_reinterp = bp_fft;
+elseif hwver == 2
     width_fft = sample_width+Nmax+1;
     bp_fft = width_fft-2;
+    width_perio = 47; % Filter is restricted to 47 bit width
+    bp_perio = bp_fft*2-(width_fft*2-47);
+    width_fpadd = width_perio+bartmax;
+    % bp_reinterp = bp_fft;
+else
+    % width_fft = sample_width+Nmax+1;
+    width_fft = sample_width; % ????
+    bp_fft = width_fft-2;
     bp_perio = bp_fft*2;  
-    bp_reinterp = bp_fft;
+    width_perio = width_fft*2+1;
+    width_fpadd = width_perio+bartmax;
+    % bp_reinterp = bp_fft;
 %    width_out = 0; 
 end
-width_perio = width_fft*2+1;
-width_fpadd = width_perio+bartmax;
 if ~width_out
     width_out=width_fpadd;
 end
@@ -123,7 +134,7 @@ bp_out = max(width_out-(width_fpadd-bp_fpadd),0);
 if w == 1
     win = kaiser(Nfft+1,9);
     Ewin = sum(kaiser(Nmax+1,9).^2)/Nmax;
-elseif w == 2
+elseif w == 2 
     win = hanning(Nfft+1);
     Ewin = sum(hanning(Nmax+1).^2)/Nmax;
 elseif w == 3
