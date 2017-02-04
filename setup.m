@@ -150,6 +150,7 @@ scale_sch = bi2de(repmat([0,0],1,ceil(N/2)), 'left-msb');
 if source ~= 0
     create_test_vector(source,Nfft,L,alpha,xmin,deltaf,dir);
 end
+perio_config.ts = 
 save(parfile);
 end
 

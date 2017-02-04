@@ -14,12 +14,13 @@ start=min(find(xwin_valid.data));
 xwin = xwin_re.data + 1j*xwin_im.data;
 % xwin = xwin(start+1:start+xlength);
 xwin = xwin(find(xwin_valid.data));
-xwin = xwin(2:end);  
+xwin = xwin(2:end-1);  
 xwin = reshape(xwin,[Nfft,nsect,ncols]);
 % Px = px.data(px_latency:px_latency+xlength-1);
 Px = px.data(find(px_valid.data));
 % Px = reshape(Px, [Nfft, nsect, ncols]);
-Px = reshape(Px, [Nfft, 1, ncols]);
+Px = reshape(Px, [Nfft, 1, ceil(length(Px)/Nfft)]); % changed this feb4
+Px = Px(:,1);
 % Xf = Xk_re.data(fft_latency:fft_latency+xlength-1) ...
 %   + 1j*Xk_im.data(fft_latency:fft_latency+xlength-1);
 Xf = Xk_re.data(find(Xk_valid.data)) + 1j*Xk_im.data(find(Xk_valid.data));
