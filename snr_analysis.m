@@ -47,8 +47,7 @@ for w=windows
                             fc = findex(imax);
                             mask = find(findex<(fc-bw/2) | findex>(fc+bw/2));
                             varPxx = var(Px(mask));
-                            meanPxx = mean(Px(mask));
-                            
+                            meanPxx = mean(Px(mask));                            
                     end
                 end
             end
