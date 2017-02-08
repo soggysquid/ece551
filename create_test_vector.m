@@ -1,4 +1,4 @@
-function [x,findex,fs] = create_test_vector(source, Nfft, L, alpha, xmin, deltaf, dir)
+function [x,findex,fs] = create_test_vector(source, Nfft, L, A, alpha, xmin, deltaf, dir)
 % source:
 %   1: iq .dat
 %   2: Stephen's csv 
@@ -91,8 +91,8 @@ elseif source >= 4 & source < 8  % tones
     % fs = 10e3*Nfft;
     fc = 0;
     if source == 4 | source == 5
-        A1 = 1;
-        A1 = 1-xmin;
+        A1 = A;
+        % A1 = 1-xmin;
         A2 = max(xmin,alpha);
         f1 = 1/8;
         f2 = f1+deltaf;     
@@ -102,12 +102,12 @@ elseif source >= 4 & source < 8  % tones
         end
         x = x/max(max(abs(x)));
     elseif source == 6
-        A1 = 1;
+        A1 = A;
         f1 = 1/8 + 0.5/Nfft;
         x = A1*(cos(2*pi*n*f1)+1j*sin(2*pi*n*f1));
         % x = A1*cos(2*pi*n*f1);
     elseif source == 7
-        A1 = 1;
+        A1 = A;
         A2 = max(2^-8,alpha);
         f1 = 1/8 + 0.5/Nfft;
         f2 = f1+deltaf;
@@ -122,13 +122,13 @@ elseif source == 8
     n=[1:Nfft];
     P = 2^L;
     x = zeros(1,Nfft);
-    x(1) = 1;
+    x(end) = 1+1j;
     nsect = P/Nfft;
     ncols = 1;
     x = repmat(x', [1,nsect]); 
 elseif source == 9 | source == 10 | source == 12
     % fs = Nmax*10e3;
-    A1 = 0.5;
+    A1 = A;
     fc = 0;
     n=[1:Nfft];
     P = 2^L;
@@ -175,9 +175,9 @@ nfft_valid(1:2) = 1;
 nfft_valid_ts = timeseries(nfft_valid, [1:xlength]);
 % Prepend a frame of zeros because first sample of first frame is dropped
 % by fft core which might munge the first frame
-xr_ts = timeseries([real(x(1)); real(x(:))], [1:xlength+1]); 
-xi_ts = timeseries([imag(x(1)); imag(x(:))], [1:xlength+1]);
-xv_ts = timeseries(ones(xlength+1,1),[1:xlength+1]);
+xr_ts = timeseries(real(x(:)), [1:xlength]); 
+xi_ts = timeseries(imag(x(:)), [1:xlength]);
+xv_ts = timeseries(ones(xlength,1),[1:xlength]);
 % xv_ts = timeseries([ones(3,1);zeros(xlength-3,1)],[1:xlength]);
 Ts = 1/fs;
 save(vectfile)
