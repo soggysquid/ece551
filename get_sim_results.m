@@ -1,7 +1,7 @@
 % Get results from simulation
 px_latency = min(find(px_valid.data));
-fft_latency = min(find(Xk_valid.data));
-latency = fft_latency;
+% fft_latency = min(find(Xk_valid.data));
+% latency = fft_latency;
 % latency = min(find(bart_valid.data));
 % Px_b = px_bart.data(latency:latency+Nfft*ncols-1);
 % Px_b = reshape(Px_b, [Nfft, 1, ncols])/nsect;
@@ -23,16 +23,21 @@ Px = px.data(find(px_valid.data));
 % Px = reshape(Px, [Nfft, nsect, ncols]);
 Px = reshape(Px, [Nfft, 1, ceil(length(Px)/Nfft)]); % changed this feb4
 Px = Px(:,1);
+% Px = Px
+% Px = 2^bartmax*Px;
+% Px = Px/2^(Nmax-N);
 % Xf = Xk_re.data(fft_latency:fft_latency+xlength-1) ...
 %   + 1j*Xk_im.data(fft_latency:fft_latency+xlength-1);
 Xf = Xk_re.data(find(Xk_valid.data)) + 1j*Xk_im.data(find(Xk_valid.data));
 % if scaling == 3
 blkexp = blk_exp.data(min(find(blk_exp_status.data)));
-Px = Px/2^(2*(N-blkexp))*1/2^(L-N);
-    % Xf = Xf.*2^blkexp;
-% else
-%     blkexp = 0;
-% end
+% Px = Px/2^(2*(N-blkexp))*1/2^(L-N);
+Px_u = Px*2^(blkexp*2);
+Px = Px/2^(2*(N-blkexp));
+if width_out < width_perio - bp_perio
+    Px = Px*2^(width_perio-bp_perio-width_out);
+end
+
 if ~exist('ncols','var')
     ncols = 1;
 end
