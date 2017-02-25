@@ -1,15 +1,20 @@
 clear;
 dir = date;
-% dir = '11-Feb-2017';
-testDir = [dir, '/errAnalysis_s4_3'];
+% dir = '16-Feb-2017';
+testDir = [dir, '/errAnalysis_s12_hw1_long'];
+% testDir = [dir, '/errAnalysis_s12_hw1_long'];
 load([testDir, '/', 'settings']);
 impNum = length(hwList)*length(widthOutList);
 impIndex = 0;
 if exist('alphaList')
     err = zeros(length(mList),impNum,length(alphaList));
+    xferr = zeros(length(mList),impNum,length(alphaList));
     avgErr = zeros(length(mList),impNum,length(alphaList));
     varErr = zeros(length(mList),impNum,length(alphaList));
     maxErr = zeros(length(mList),impNum,length(alphaList));
+    xterm = zeros(length(mList),impNum,length(alphaList));
+    % ubound = zeros(length(mList),impNum,length(alphaList),length(numsims));
+    ubound = zeros(length(mList),impNum,length(alphaList));
     scaling = zeros(length(mList),impNum,length(alphaList));
 else
     err = zeros(length(mList),impNum);
@@ -37,10 +42,13 @@ for hw=hwList
                 L=M;
                 Nfft = 2^M;
                 fftl = 2^N;
+                thisXferr = 0;
                 thisErr = 0;
                 thisAvgErr=0;
                 thisVarErr=0;
-                thisMaxErr = 0;
+                thisMaxErr = 0;   
+                thisUbound = 0;
+                thisXterm = 0;
                 for i = 1:numsims
                     width_out = width;
                     matfile = ['s', int2str(s), 'w', int2str(w)...
@@ -54,14 +62,31 @@ for hw=hwList
                     scaling(mIndex,i) = blkexp;
                     % thisErr = thisErr + sum(Px_u)./(Nfft*sum(xq.*conj(xq)));
                     PSD = sum(Px2_u);
-                    thisErr = thisErr + abs(sum(Px_u)-PSD)/PSD; 
-                    thisAvgErr = thisAvgErr + sum(Px-Px2);
+                    % thisErr = thisErr + abs(sum(Px_u)-PSD)/PSD; 
+                    % thisErr = thisErr + sum(abs(Px_u-Px2_u))/(sum(xq.*conj(xq))*Nfft);
+                    Xf = Xf*2^blkexp;
+                    Xfe = Xf-Xf2;
+                    thisXferr = thisXferr + sum(Xfe.*conj(Xfe))/(Nfft*sum(xq.*conj(xq)));
+                    % thisXferr = thisXferr + Nfft*var(Xfe.*conj(Xfe))/(sum(xq.*conj(xq)));
+                    thisErr = thisErr + sum(abs(Px2_u-Px_u))/(sum(xq.*conj(xq))*Nfft);
+                    thisAvgErr = thisAvgErr + sum(abs(Px-Px2));
                     thisVarErr = thisVarErr + (sum((Px-Px2).^2))/PSD;
                     Px = max(Px,2^(-width_out+1));
                     mErr = 10*log10(max(max(Px./Px2),max(Px2./Px)));
                     thisMaxErr = max(mErr,thisMaxErr);
+                    K = (1/Nfft)*sum(xq.*conj(xq));
+                    % ubound(mIndex,impIndex,alphaIndex,i) = 2^(M+3)*(2^(-2*16)/12)/K
+                    thisUbound = thisUbound + 2^(M+3)*(2^(-2*16)/12)/K;
+%                     thisXterm = thisXterm + ...
+%                         (sum(real(Xf).*(real(Xf2)-real(Xf)))...
+%                         + (sum(imag(Xf).*(imag(Xf2)-imag(Xf)))))/(sum(xq.*conj(xq))*Nfft);
+                    thisXterm = thisXterm + sum(real(Xf).*real(Xf2)+imag(Xf).*imag(Xf2))/ ...
+                                (sum(xq.*conj(xq))*Nfft);    
                 end
-                err(mIndex,impIndex,alphaIndex) = thisErr/numsims; 
+                xferr(mIndex,impIndex,alphaIndex) = thisXferr/numsims;
+                xterm(mIndex,impIndex,alphaIndex) = thisXterm/numsims;
+                ubound(mIndex,impIndex,alphaIndex) = thisUbound/numsims;
+                err(mIndex,impIndex,alphaIndex) = thisErr/numsims;
                 avgErr(mIndex,impIndex,alphaIndex) = thisAvgErr/numsims;
                 varErr(mIndex,impIndex,alphaIndex) = thisVarErr/numsims;
                 maxErr(mIndex,impIndex,alphaIndex) = thisMaxErr;

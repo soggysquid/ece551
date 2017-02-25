@@ -29,18 +29,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % set width_out to 0 to use full precision
 width_out = 0;
-source = 6;
+source = 12;
 A2 = 2^-13;
 A2 = 0;
-alpha=0;
+alpha=0.0001;
 A = 1 - A2 - 2^-16 - 3*alpha;
-A = 1-2^-16;
+% A = 1-2^-16;
 N = 8;  % Length of FFT, must be < L
 L = 8;  % Length of sample
-w = 2;
+w = 0;
 % alpha = 2^-15;
 % alpha = 0.0;
-hwver = 1;
+hwver = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rng(133);
 if hwver == 2

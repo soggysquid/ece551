@@ -47,7 +47,7 @@ switch nargin
         w = 2;
         % alpha = 2^-15;
         % alpha = 0.0;
-        hwver = 0;
+        hwver = 1;
 end
 Nmax = 13;
 deltaf = 1600/2^Nmax;      % Make deltaf 60 bins away
@@ -71,7 +71,6 @@ sources = {' iq .dat ', ' usrp ', ...
 wins = {'rect', 'kaiser', 'hanning', 'blackman'};
 % Nmax = 13; % log2 of max points of run-time configurable FFT
 bartmax = Nmax-8;  % max number segments we can average 
-latency = 25000;
 float = 0;
 adc_width = 16;
 sample_width = adc_width;
@@ -88,6 +87,8 @@ datfile = 'LB3bp70f241sf64.dat';
 rmode = 'trunc';
 lmode = 'sat'; 
 Nfft = 2^N;
+latency = 2^(L+1) + 200;
+simtime = latency + 2^L;
 % alpha = 0.0;
 usemex = 0;
 % bp_reinterp = bp_fft+Nmax;
