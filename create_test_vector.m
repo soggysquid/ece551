@@ -1,4 +1,4 @@
-function [x,findex,fs] = create_test_vector(source, Nfft, L, A, alpha, xmin, deltaf, dir)
+function [x,findex,fs] = create_test_vector(source, Nfft, L, A, alpha, xmin, deltaf, dir, A2)
 % source:
 %   1: iq .dat
 %   2: Stephen's csv 
@@ -93,14 +93,14 @@ elseif source >= 4 & source < 8  % tones
     if source == 4 | source == 5
         A1 = A;
         % A1 = 1-xmin;
-        A2 = max(xmin,alpha);
+        % A2 = max(xmin,alpha);
         f1 = 1/8;
         f2 = f1+deltaf;     
         x = A1*cos(2*pi*n*f1) + 1j*A1*sin(2*pi*n*f1);
         if source == 5
             x = x + A2*(cos(2*pi*n*f2)+1j*sin(2*pi*n*f2));
         end
-        x = x/max(max(abs(x)));
+%        x = x/max(max(abs(x)));
     elseif source == 6
         A1 = A;
         f1 = 1/8 + 0.5/Nfft;
@@ -108,12 +108,12 @@ elseif source >= 4 & source < 8  % tones
         % x = A1*cos(2*pi*n*f1);
     elseif source == 7
         A1 = A;
-        A2 = max(2^-8,alpha);
+        % A2 = max(2^-8,alpha);
         f1 = 1/8 + 0.5/Nfft;
-        f2 = f1+deltaf;
+        f2 = f1-deltaf;
         x = A1*(cos(2*pi*n*f1) + 1j*sin(2*pi*n*f1))+A2*(cos(2*pi*n*f2) + 1j*sin(2*pi*n*f2));
     end
-    x = x + alpha*randn(size(x));
+    % x = x + alpha*randn(size(x));
     % x = repmat(x(1:end-1)',[1,nsect]);
     x = reshape(x,[Nfft,nsect]);
 elseif source == 8
@@ -134,8 +134,8 @@ elseif source == 9 | source == 10 | source == 12
     P = 2^L;
     if source == 9
         x = ones(1,Nfft)*A1 + 1j*ones(1,Nfft)*A1;
-    elseif source == 12
-        x = rand(1,Nfft) + 1j*rand(1,Nfft);
+    elseif source == 12 
+        x = 2*rand(1,Nfft)-1 + 1j*(2*rand(1,Nfft)-1);
     else
         x = zeros(1,Nfft);
     end
@@ -168,6 +168,9 @@ end
 findex = [1:Nfft]'*(fs)/(Nfft+1);
 xorig = x;
 x = x + alpha*randn(size(x)) + 1j*alpha*randn(size(x));
+if max(real(x))>=1 | max(imag(x))>=1 | max(real(x))<-1 | max(imag(x))<-1
+    Error = 'ERROR: CLIPPING WILL OCCUR'
+end
 xlength = length(x(:));
 nfft_ts = timeseries(log2(Nfft)*ones(xlength,1), [1:xlength]);
 nfft_valid = zeros(xlength,1);

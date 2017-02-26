@@ -29,27 +29,32 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % set width_out to 0 to use full precision
 width_out = 0;
-source = 6;
-alpha = 0.0167;
-% alpha = 0;
-A = 0.9;
+source = 4;
+A2 = 2^-13;
+A2 = 0;
+alpha = 0.001;
+A = 1 - A2 - 2^-16 - 3*alpha;
+% A = 1-2^-16;
 N = 13;  % Length of FFT, must be < L
 L = 13;  % Length of sample
-w = 0;
+w = 2;
 % alpha = 2^-15;
-% alpha = 0.0;
 hwver = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rng(123);
+rng(133);
 if hwver == 2
     w=2;
 end
-setup(source,width_out,N,L,w,hwver,A,alpha)
-if hwver == 0
-    sim('bart_block_scaled.slx')
-elseif hwver == 1
-    sim('bart_block.slx')
-else
-    sim('bart_block_spectsmoothed_scaled.slx')
+Error=0;
+setup(source,width_out,N,L,w,hwver,A,alpha,A2)
+load(vectfile);
+if ~Error
+    if hwver == 0
+        sim('bart_block_scaled.slx')
+    elseif hwver == 1
+        sim('bart_block.slx')
+    else
+        sim('bart_block_spectsmoothed_scaled.slx')
+    end
+    fixpoint_analysis
 end
-fixpoint_analysis

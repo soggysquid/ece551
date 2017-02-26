@@ -11,6 +11,7 @@ alphaList = [sqrt(2^10*Delta)];
 scaling = 1;
 
 thisDir = [date, '/full_precision_perio'];
+thisDir = ['04-Feb-2017/batch_tests'
 if ~exist(dir, 'dir')
     mkdir(dir)
 end
@@ -20,21 +21,22 @@ for w=windows
             for avg = averaging
                 for alpha = alphaList
                     for source = sourceList
-                        L = M-avg;
-                        matfile = ['s', int2str(source), 'w', int2str(w)...
-                                   'N', int2str(N), 'L', int2str(L), 'widthout', int2str(width_out),...
-                                   'alpha', num2str(alpha), 'scale', int2str(scaling),'.mat'];
-                        if runSim
-                            rng=123;
-                            setup(source, width_out, M, L, w, scaling, alpha)
-                            load(parfile)
-                            load(vectfile)
-                            sim('bart_block');
-                            get_sim_results;
-                            save([thisDir, '/', matfile]);
-                        else
-                            load([thisDir, '/', matfile]);
-                        end
+                        for hwver = hwList
+                            L = M-avg;
+                            matfile = ['s', int2str(source), 'w', int2str(w)...
+                                       'N', int2str(N), 'L', int2str(L), 'b', int2str(width_out),...
+                                       'a', num2str(alpha), 'hw', int2str(scaling),'.mat'];
+                            if runSim
+                                rng=123;
+                                setup(source, width_out, M, L, w, scaling, alpha)
+                                load(parfile)
+                                load(vectfile)
+                                sim('bart_block');
+                                get_sim_results;
+                                save([thisDir, '/', matfile]);
+                            else
+                                load([thisDir, '/', matfile]);
+                            end
                         if source ==4
                             if w == 0
                                 bw = 0.89*2*pi/N;
