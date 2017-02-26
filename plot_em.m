@@ -1,4 +1,4 @@
-function plot_em( X1,findex, pl_title, fc, b, X2 )
+function plot_em( X1,pl_title, b, X2 )
 %UNTITLED2 Summary of this function goes here
 %   b is width of data
 epsilon1 = 10*log10(2^-57);

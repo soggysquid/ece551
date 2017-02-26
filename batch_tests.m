@@ -16,16 +16,17 @@ A = 1.0; % not used in source 12
 alpha = 0.0; % also not used in source 12
 if doErrAnalysis
     numsims=1;
-    widthOutList = [0,32];
-sourceList = [4,6];
-winList = [0,2];
-mList = [8,9,10];
-avgList = [1,3];
-avg=0;
-% alphaList = [0,2^-18,2^-14,2^-10,2^-6,2^-4,2^-2];
-alphaList = [0,0.001,0.01,0.1];
-hwList = [0];
-    testDir = [date, '/miscAnalysis2'];
+    widthOutList = [0];
+    sourceList = [12];
+    winList = [0];
+    mList = [8,9,10,11,12,13];
+    avgList = [0];
+    avg=0;
+    % alphaList = [0,2^-18,2^-14,2^-10,2^-6,2^-4,2^-2];
+    alphaList = [0];
+    hwList = [0,1];
+    % testDir = [date, '/miscAnalysis2'];
+    testDir = ['25-Feb-17/errAnalysis_s12'];
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
