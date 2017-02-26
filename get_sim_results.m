@@ -37,9 +37,10 @@ if runsim
         % Px = Px*2^(2*(-L));
         Px = Px/(2^(2*Nmax));
     else
-        Px_u = Px*2^(2*blkexp-L-(L-N));
-        % Px = Px*2^(2*(blkexp-L));
-        
+        % Px_u = Px*2^(2*blkexp-L-(L-N));
+        Px_u = 2^(2*blkexp)*Px*2^(N-L);
+        % Px = 2^(2*blkexp)*Px*2^(-L-N);  
+        Px = 2^(2*blkexp)*Px*2^(-L-N)*2^(L-N);   
     end
 
 end

@@ -1,6 +1,6 @@
 % Run a batch of tests and save the results of each test
 % No
-% clear
+clear
 dir = date;
 % dir = '21-Feb-2017';
 seed=123;
@@ -15,7 +15,7 @@ sample_width=16;
 A = 1.0; % not used in source 12
 alpha = 0.0; % also not used in source 12
 if doErrAnalysis
-    numsims=10;
+    numsims=1;
     % widthOutList = [0];
     sourceList = [4];
     winList = [0];
@@ -30,8 +30,10 @@ if doErrAnalysis
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
-    save([testDir, '/', 'settings.mat'], 'numsims', 'widthOutList', 'winList', ...
-        'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
+%     save([testDir, '/', 'settings.mat'], 'numsims', 'widthOutList', 'winList', ...
+%         'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
+    save([testDir, '/', settings], 'numsims', 'widthOutList', 'winList', ...
+         'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
 elseif pgAnalysis
     numsims=1;
     widthOutList = [32];

@@ -1,52 +1,30 @@
-load([dir, '/acc_s12w0b32scale1'])
-figure(1);
-scatter(Nmat,20*log10(ratio1),'*');
-hold('on')
-plot(Nmat,20*log10(lubound))
-legend('error', 'lower-upper bound', ...
-    'Location','northwest');
-title('Rms(FFT err)/rms(result) No Scaling');
-xlabel('M')
-set(gca, 'XTick', Nmat)
-ylabel('rms(err)/rms(result) dB')
-print([dir, '/fft_noscale_accuracy.png'], '-dpng');
-
 figure(2)
-load([dir,'/acc_s12w0b32scale3'])
-scatter(Nmat,log10(ratio1),'*');
-hold('on')
-plot(Nmat,log10(uubound))
-legend('error', 'upper-upper bound', ...
-    'Location','northwest');
-clear title;
-title('Rms(FFT err)/rms(result)');
-xlabel('M')
-set(gca, 'XTick', Nmat)
-ylabel('rms(err)/rms(result) dB')
-print([dir, '/fft_scale_accuracy.png'], '-dpng');
+load('s4error_2')
+nList = [8:13]';
+plot(nList, 10*log10(2*ubound(:,1,1)),'color','b');
+set(gca,'xtick',nList)
+hold('on');
+plot(nList, 10*log10(xferr(:,1,1)),'s','color','b');
+plot(nList, 10*log10(xferr(:,2,1)),'d','color','b');
+xticklabels(num2cell(2.^nList));
+plot(nList, 10*log10(2*ubound(:,1,3)),'color','r');
+plot(nList, 10*log10(xferr(:,1,3)),'s','color','r');
+plot(nList, 10*log10(xferr(:,2,3)),'d','color','r');
+
+legend('ubound, \sigma=0.001','\sigma=0.001, scaling', '\sigma=0.001, no scaling',...
+    'ubound, \sigma=0.1', '\sigma=0.1, scaling', '\sigma=0.1, no scaling')
+xlabel('FFT Points')
+ylabel('dB')
 
 figure(3)
-load([dir, '/acc_s12w0b32scale1'])
-scatter(Nmat,10*log10(ratio2),'*');
+plot(nList, 10*log10(err(:,1,1)),'s','color','b');
+set(gca,'xtick',nList)
 hold('on')
-load([dir,'/acc_s12w0b32scale3'])
-scatter(Nmat,10*log10(ratio2),'*');
-legend('error w/o scaling', 'error with scaling','Location','northwest')
-xlabel('M')
-ylabel('(PSD err)/(noise power) dB')
-set(gca, 'XTick', Nmat)
-title('(PSD err)/(noise power)');
-print([dir, '/psd_accuracy.png'], '-dpng');
-
-figure(4)
-load([dir, '/acc_s12w0b32scale1'])
-scatter(Nmat,lat./(2.^Nmat)');
-hold('on')
-load([dir, '/acc_s12w0b32scale3'])
-scatter(Nmat,lat./(2.^Nmat)');
-legend('w/o scaling', 'with scaling')
-title('Ratio of latency to FFT points');
-xlabel('M');
-set(gca, 'XTick', Nmat)
-ylabel('cycles/N');
-print([dir, '/latency.png'], '-dpng');
+plot(nList, 10*log10(err(:,2,1)),'d','color','b');
+plot(nList, 10*log10(err(:,1,3)),'s','color','r');
+plot(nList, 10*log10(err(:,2,3)),'d','color','r');
+xticklabels(num2cell(2.^nList));
+legend('\sigma=0.001, scaling', '\sigma=0.001, no scaling',...
+    'ubound, \sigma=0.1', '\sigma=0.1, scaling', '\sigma=0.1, no scaling')
+xlabel('FFT Points')
+ylabel('dB')
