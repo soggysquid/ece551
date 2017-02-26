@@ -1,6 +1,6 @@
 % Run a batch of tests and save the results of each test
 % No
-clear
+% clear
 dir = date;
 % dir = '21-Feb-2017';
 seed=123;
@@ -15,18 +15,18 @@ sample_width=16;
 A = 1.0; % not used in source 12
 alpha = 0.0; % also not used in source 12
 if doErrAnalysis
-    numsims=1;
-    widthOutList = [0];
-    sourceList = [12];
+    numsims=10;
+    % widthOutList = [0];
+    sourceList = [4];
     winList = [0];
-    mList = [8,9,10,11,12,13];
-    avgList = [0];
-    avg=0;
+    % mList = [8,9,10,11,12,13];
+    % avgList = [0];
+    % avg=0;
     % alphaList = [0,2^-18,2^-14,2^-10,2^-6,2^-4,2^-2];
-    alphaList = [0];
-    hwList = [0,1];
+    alphaList = [0.001,0.01,0.1];
+    % hwList = [0,1];
     % testDir = [date, '/miscAnalysis2'];
-    testDir = ['25-Feb-17/errAnalysis_s12'];
+    % testDir = [date, '/errAnalysis_s4'];
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
@@ -84,7 +84,7 @@ for w=winList
                                     end
                                     get_sim_results;
                                     save([testDir, '/', matfile], 'Px', 'Px_u', 'xq', 'Xf', 'source', 'win', ...
-                                        'Ewin', 'N', 'L', 'width_out', 'alpha', 'hwver', 'blkexp'); 
+                                        'Ewin', 'N', 'L', 'width_out', 'alpha', 'hwver', 'blkexp', 'px_latency'); 
                                 end
                             end
                         end

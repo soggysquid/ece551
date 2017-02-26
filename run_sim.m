@@ -28,23 +28,27 @@
 %   2: block floating point w spectral smoothing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % set width_out to 0 to use full precision
-width_out = 0;
-source = 12;
-A2 = 2^-13;
+width_out = 32;
+source = 4;
+%A2 = 2^-6;
 A2 = 0;
 alpha = 0;
+% alpha = 2^-7;
+alpha = 2^-18;
+alpha = 2^-6;
 A = 1 - A2 - 2^-16 - 3*alpha;
+A = 1 - A2 - 2^-16 - 3*2^-6
 % A = 1-2^-16;
-N = 10;  % Length of FFT, must be < L
+N = 13;  % Length of FFT, must be < L
 Nfft = 2^N;
-L = 10;  % Length of sample
+L = 13;  % Length of sample
 w = 0;
 % alpha = 2^-15;
 hwver = 1;
 dir = 0;     % If you want to simulate
 % If you're loading files...
 runsim = 1;
-if 1     % load instead of running results
+if 0     % load instead of running results
     runsim = 0
     dir = '25-Feb-2017/errAnalysis_s12';
     i=1          

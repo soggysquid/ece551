@@ -33,11 +33,13 @@ if runsim
     % xwin = xq .* repmat(win, [1 nsect ncols]);
     Qpsd = circshift(Qpsd, Nfft/2-1);
     if hwver==1
-        Px_u = Px/2^(2*(13-N));
-        Px = Px*2^(2*(-L));
+        Px_u = Px/2^(2*(Nmax-N));
+        % Px = Px*2^(2*(-L));
+        Px = Px/(2^(2*Nmax));
     else
-        Px_u = Px*2^(2*blkexp-(L-N));
-        Px = Px*2^(2*(blkexp-L));
+        Px_u = Px*2^(2*blkexp-L-(L-N));
+        % Px = Px*2^(2*(blkexp-L));
+        
     end
 
 end

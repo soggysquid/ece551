@@ -23,8 +23,8 @@ for b=1:bands
     if exist('X2')
 %         plot([1:length(X1)],max(10*log10(X1(:,:,b)), epsilon1), 'r', ...
 %             [1:length(X2)],max(10*log10(X2(:,:,b)), epsilon2), 'b');
-        plot([1:length(X1)],10*log10(X1(:,:,b)), 'r', ...
-            [1:length(X2)],10*log10(X2(:,:,b)), 'b');
+        plot([1:length(X1)],10*log10(X1(:,:,b)*1e3), 'r', ...
+            [1:length(X2)],10*log10(X2(:,:,b)*1e3), 'b');
     else
 %         plot(max(10*log10(X1(:,:,b)), epsilon3), 'b');
         plot(10*log10(X1(:,:,b)), 'b');
@@ -35,7 +35,7 @@ for b=1:bands
 %    end
 end
 xlabel('Bins')
-ylabel('dB')
+ylabel('dBm')
 xlim([0 length(X1)]);
 if exist('X2')
     legend('SW', 'HW')
