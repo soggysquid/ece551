@@ -12,17 +12,17 @@ xq = xq_re.data + 1j*xq_im.data;
 xq = xq(find(xq_valid.data));
 xq = reshape(xq,[Nfft,nsect,ncols]);
 start=min(find(xwin_valid.data));
-xwin = xwin_re.data + 1j*xwin_im.data;
+% xwin = xwin_re.data + 1j*xwin_im.data;
 % xwin = xwin(start+1:start+xlength);
-xwin = xwin(find(xwin_valid.data));
+% xwin = xwin(find(xwin_valid.data));
 % xwin = xwin(2:end-1);
-xwin = xwin(1:end-1);  
-xwin = reshape(xwin,[Nfft,nsect,ncols]);
+% xwin = xwin(1:end-1);  
+% xwin = reshape(xwin,[Nfft,nsect,ncols]);
 % Px = px.data(px_latency:px_latency+xlength-1);
 Px = px.data(find(px_valid.data));
 % Px = reshape(Px, [Nfft, nsect, ncols]);
 Px = reshape(Px, [Nfft, 1, ceil(length(Px)/Nfft)]); % changed this feb4
-Px = Px(:,1);
+Px = Px(:,1);                                                                                                               
 % Px = Px
 % Px = 2^bartmax*Px;
 % Px = Px/2^(Nmax-N);
@@ -32,8 +32,13 @@ Xf = Xk_re.data(find(Xk_valid.data)) + 1j*Xk_im.data(find(Xk_valid.data));
 % if scaling == 3
 blkexp = blk_exp.data(min(find(blk_exp_status.data)));
 % Px = Px/2^(2*(N-blkexp))*1/2^(L-N);
-Px_u = Px*2^(blkexp*2);
-Px = Px/2^(2*(N-blkexp));
+if hwver==1
+    Px_u = Px/2^(L-N);
+    Px = Px*2^(2*(-L));
+else
+    Px_u = Px*2^(2*blkexp-(L-N));
+    Px = Px*2^(2*(blkexp-L));
+end
 if width_out < width_perio - bp_perio
     Px = Px*2^(width_perio-bp_perio-width_out);
 end

@@ -134,7 +134,7 @@ elseif source == 9 | source == 10 | source == 12
     P = 2^L;
     if source == 9
         x = ones(1,Nfft)*A1 + 1j*ones(1,Nfft)*A1;
-    elseif source == 12
+    elseif source == 12 
         x = 2*rand(1,Nfft)-1 + 1j*(2*rand(1,Nfft)-1);
     else
         x = zeros(1,Nfft);

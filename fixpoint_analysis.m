@@ -10,12 +10,7 @@ end
 get_sim_results
 
 %% Analysis
-% sf = 2^(N-1);
-sf = 2^Nmax;
-% sf=1;
-sf2 = 2^N;
-% sf = 1;
-Qfft = fft(x(:,1:nsect,1:ncols)-xq)/sf;
+Qfft = fft(x(:,1:nsect,1:ncols)-xq)/2^Nmax;
 Qpsd = Qfft.*conj(Qfft);
 % xwin = xq .* repmat(win, [1 nsect ncols]);
 xwin2 = xq.*win;

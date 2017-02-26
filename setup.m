@@ -42,12 +42,12 @@ switch nargin
         A = 0;
         A2 = 1e-4;
         alpha = 2^-9;
-        N = 13;  % Length of FFT, must be < L
+        N = 8;  % Length of FFT, must be < L
         L = 13;  % Length of sample
         w = 2;
         % alpha = 2^-15;
         % alpha = 0.0;
-        hwver = 1;
+        hwver = 0;
 end
 Nmax = 13;
 deltaf = 1600/2^Nmax;      % Make deltaf 60 bins away
@@ -112,7 +112,7 @@ if hwver == 1  % no scaling
     width_fpadd = width_perio+bartmax;
     bp_reinterp = bp_fft;
 % elseif hwver == 2
-%     width_fft = sample_width+Nmax+1;
+%     width_fft = sample_width;
 %     bp_fft = width_fft-2;
 %     width_perio = 47; % Filter is restricted to 47 bit width
 %     bp_perio = bp_fft*2-(width_fft*2-47);
@@ -122,8 +122,16 @@ else
     width_fft = sample_width;
     % bp_fft = width_fft-2;
     bp_fft = width_fft-1;
-    bp_perio = bp_fft*2-3;  % Shift because of window energy
-    width_perio = (width_fft-1)*2+1;
+    if hwver == 2
+        width_fft = sample_width-1;
+        % bp_fft = width_fft-2;
+        bp_fft = width_fft;        
+        bp_perio = bp_fft*2+1-3;  % shift one due to filter, 3 due to energy
+        width_perio = width_fft*2+1+2;
+    else
+        bp_perio = bp_fft*2-3;  % Shift because of window energy
+        width_perio = (width_fft-1)*2+1;
+    end
     width_fpadd = width_perio+bartmax;
 end
 bp_fpadd = bp_perio;
@@ -147,9 +155,9 @@ bp_out = max(width_out-(width_perio-bp_perio),0);
 % end
 %% Set up windowing
 if hwver == 2
-    w = 2
+    w = 2;
 end
-if w == 1
+if w == 1 
     win = kaiser(Nfft+1,9);
     Ewin = 1/(sum(kaiser(Nfft+1,9).^2)/Nfft);
 elseif w == 2 
