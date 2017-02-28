@@ -13,26 +13,26 @@ pgAnalysis=0;
 %%%%%%%%%%%%%%%%%
 sample_width=16;
 A = 1.0; % not used in source 12
-alpha = 0.0; % also not used in source 12
+alpha = 0.0; % also not used in source 12F
 if doErrAnalysis
     numsims=1;
-    % widthOutList = [0];
-    sourceList = [4];
+    widthOutList = [0];
+    sourceList = [12];
     winList = [0];
-    % mList = [8,9,10,11,12,13];
-    % avgList = [0];
+    mList = [8,9,10,11,12,13];
+    avgList = [0];
     % avg=0;
     % alphaList = [0,2^-18,2^-14,2^-10,2^-6,2^-4,2^-2];
-    alphaList = [0.001,0.01,0.1];
-    % hwList = [0,1];
+    alphaList = [0];
+    hwList = [0,1];
     % testDir = [date, '/miscAnalysis2'];
-    % testDir = [date, '/errAnalysis_s4'];
+    testDir = [date, '/errAnalysis_s12']
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
 %     save([testDir, '/', 'settings.mat'], 'numsims', 'widthOutList', 'winList', ...
 %         'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
-    save([testDir, '/', settings], 'numsims', 'widthOutList', 'winList', ...
+    save([testDir, '/', 'settings'], 'numsims', 'widthOutList', 'winList', ...
          'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
 elseif pgAnalysis
     numsims=1;

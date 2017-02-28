@@ -1,7 +1,7 @@
 clear;
 dir = date;
-% dir = '25-Feb-2017';
-testDir = [dir, '/errAnalysis_s4'];
+dir = '26-Feb-2017';
+testDir = [dir, '/errAnalysis_s12'];
 load([testDir, '/', 'settings']);
 impNum = length(hwList)*length(widthOutList);
 impIndex = 0;
@@ -80,10 +80,11 @@ for hw=hwList
                                 Xf = Xf*2^blkexp;
                             end
                             Xfe = real(Xf)-real(Xf2);
-                            thisXfErr = thisXfErr + sum(Xfe.*conj(Xfe))/(Nfft*sum(xq.*conj(xq)));
+                            thisXfErr = thisXfErr + sum(Xfe.^2)/(Nfft*sum(xq.*conj(xq)));
                             Xfe = imag(Xf)-imag(Xf2);
-                            thisXfErr = thisXfErr + sum(Xfe.*conj(Xfe))/(Nfft*sum(xq.*conj(xq)));
+                            thisXfErr = thisXfErr + sum(Xfe.^2)/(Nfft*sum(xq.*conj(xq)));
                             % thisXferr = thisXferr + Nfft*var(Xfe.*conj(Xfe))/(sum(xq.*conj(xq)));
+                            % thisErr = thisErr + sum(abs(Px2_u-Px_u))/(sum(xq.*conj(xq))*Nfft);
                             thisErr = thisErr + sum(abs(Px2_u-Px_u))/(sum(xq.*conj(xq))*Nfft);
                             thisExpErr = thisExpErr + sum(abs(Xf.*conj(Xf)-Xf2.*conj(Xf2)))...
                                 /(sum(xq.*conj(xq))*Nfft);
@@ -118,7 +119,4 @@ for hw=hwList
         end
         imp(impIndex) = strcat(int2str(hw), int2str(width));
     end
-end
-
-
-                
+end    

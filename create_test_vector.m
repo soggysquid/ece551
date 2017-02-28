@@ -97,6 +97,7 @@ elseif source >= 4 & source < 8  % tones
         f1 = 1/8;
         f2 = f1+deltaf;     
         x = A1*cos(2*pi*n*f1) + 1j*A1*sin(2*pi*n*f1);
+        % x = 1j*A1*sin(2*pi*n*f1);
         if source == 5
             x = x + A2*(cos(2*pi*n*f2)+1j*sin(2*pi*n*f2));
         end
@@ -135,7 +136,7 @@ elseif source == 9 | source == 10 | source == 12
     if source == 9
         x = ones(1,Nfft)*A1 + 1j*ones(1,Nfft)*A1;
     elseif source == 12 
-        x = 2*rand(1,Nfft)-1 + 1j*(2*rand(1,Nfft)-1);
+        x = rand(1,Nfft) + 1j*(rand(1,Nfft));
     else
         x = zeros(1,Nfft);
     end
