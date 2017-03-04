@@ -1,7 +1,9 @@
 clear;
 dir = date;
-dir = '26-Feb-2017';
-testDir = [dir, '/errAnalysis_s12'];
+% dir = '26-Feb-2017';
+testDir = [dir, '/errAnalysis_s4'];
+s=12;
+s=4;
 load([testDir, '/', 'settings']);
 impNum = length(hwList)*length(widthOutList);
 impIndex = 0;
@@ -26,8 +28,6 @@ else
 end
 lat = zeros(length(mList),impNum);
 w=winList(1);
-s=12;
-s=4;
 % s=sourceList(1);
 imp=strings(1,impNum);
 blkexpList = zeros(length(mList),impNum);
@@ -119,4 +119,5 @@ for hw=hwList
         end
         imp(impIndex) = strcat(int2str(hw), int2str(width));
     end
+    save([testDir, '/', 'errAnalysis.mat'], 'xferr', 'xterm', 'ubound', 'err', 'experr', 'varErr', 'maxErr', 'blkexpList') 
 end    

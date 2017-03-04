@@ -15,9 +15,9 @@ sample_width=16;
 A = 1.0; % not used in source 12
 alpha = 0.0; % also not used in source 12F
 if doErrAnalysis
-    numsims=1;
+    numsims=10;
     widthOutList = [0];
-    sourceList = [12];
+    sourceList = [4];
     winList = [0];
     mList = [8,9,10,11,12,13];
     avgList = [0];
@@ -26,7 +26,7 @@ if doErrAnalysis
     alphaList = [0];
     hwList = [0,1];
     % testDir = [date, '/miscAnalysis2'];
-    testDir = [date, '/errAnalysis_s12']
+    testDir = [date, '/errAnalysis_s4']
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
