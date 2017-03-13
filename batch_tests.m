@@ -6,8 +6,6 @@ dir = date;
 seed=123;
 runsim=1;
 doErrAnalysis=1;
-snrAnalysis=0;
-pgAnalysis=0;
 %%%%%%%%%%%%%%%%%
 % Test Settings 
 %%%%%%%%%%%%%%%%%
@@ -15,18 +13,18 @@ sample_width=16;
 A = 1.0; % not used in source 12
 alpha = 0.0; % also not used in source 12F
 if doErrAnalysis
-    numsims=10;
+    numsims=1;
     widthOutList = [0];
-    sourceList = [4];
-    winList = [0];
-    mList = [8,9,10,11,12,13];
+    sourceList = [6];
+    winList = [2];
+    mList = [8,9,10,11,12,13]
     avgList = [0];
     % avg=0;
     % alphaList = [0,2^-18,2^-14,2^-10,2^-6,2^-4,2^-2];
-    alphaList = [0];
-    hwList = [0,1];
+    alphaList = [0.167];
+    hwList = [0];
     % testDir = [date, '/miscAnalysis2'];
-    testDir = [date, '/errAnalysis_s4']
+    testDir = [date, '/errAnalysis_s6_hann']
     if ~exist(testDir, 'dir')
         mkdir(testDir)
     end
@@ -34,20 +32,6 @@ if doErrAnalysis
 %         'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
     save([testDir, '/', 'settings'], 'numsims', 'widthOutList', 'winList', ...
          'mList', 'avgList', 'hwList', 'alphaList', 'sourceList')
-elseif pgAnalysis
-    numsims=1;
-    widthOutList = [32];
-    sourceList = [6];
-    winList = [0,2];
-    mList = [8,10,12];
-    avgList = [0];
-    hwList = [0,1];
-    testDir = [date, '/pgAnalysis'];
-    if ~exist(testDir, 'dir')
-        mkdir(testDir)
-    end
-    save([testDir, '/', 'settings.mat'], 'numsims', 'widthOutList', 'winList', ...
-        'mList', 'avgList', 'hwList', 'alpha', 'sourceList')
 end    
 if ~exist(testDir, 'dir')
     mkdir(testDir)
@@ -69,7 +53,7 @@ for w=winList
                             for i = [1:numsims]
                                 width_out = thisWidth;
                                 Error=0;
-                                setup(source, width_out, N, L, w, hwver, A, alpha);
+                                setup(source, width_out, N, L, w, hwver, A, alpha,0,0);
                                 
                                 matfile = ['s', int2str(source), 'w', int2str(w)...
                                        'N', int2str(N), 'L', int2str(L), 'b', int2str(width_out),...

@@ -18,6 +18,9 @@ if runsim
         Px_u = Px/2^(2*(Nmax-N));
         % Px = Px*2^(2*(-L));
         Px = Px/(2^(2*Nmax));
+    elseif hwver == 2
+       Px_u = 2^(2*blkexp)*Px; 
+       Px = 2^(2*blkexp)*Px/2^(2*N);  
     else
         % Px_u = Px*2^(2*blkexp-L-(L-N));
         % Px_u = 2^(2*blkexp)*Px*2^(N-L);

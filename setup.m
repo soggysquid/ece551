@@ -1,7 +1,7 @@
 % Script to setup all the parameters and teuntitledst vectors that we're going to
 % use for modelling and analysis
 % clearvars -except latency sample_width twiddle_width;
-function setup(source, width_out, N, L, w, hwver, A, alpha, A2)
+function setup(source, width_out, N, L, w, hwver, A, alpha, A2, color)
 % sample-width: fft sample width (adc width is fixed)
 % width_out: width of output
 % source: data set to use
@@ -48,6 +48,7 @@ switch nargin
         % alpha = 2^-15;
         % alpha = 0.0;
         hwver = 0;
+        color = 0;
 end
 Nmax = 13;
 deltaf = 1600/2^Nmax;      % Make deltaf 60 bins away
@@ -174,7 +175,7 @@ win = win(1:end-1);
 % scale_sch = bi2de(repmat([1,0],1,N/2), 'left-msb');
 scale_sch = bi2de(repmat([0,0],1,ceil(N/2)), 'left-msb');
 if source ~= 0
-    create_test_vector(source,Nfft,L,A,alpha,xmin,deltaf,dir,A2);
+    create_test_vector(source,Nfft,L,A,alpha,xmin,deltaf,dir,A2,color);
 end
 save(parfile);
 end

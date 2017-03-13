@@ -1,7 +1,7 @@
 clear;
 dir = date;
 % dir = '26-Feb-2017';
-testDir = [dir, '/errAnalysis_s4'];
+testDir = [dir, '/errAnalysis_s4_hann'];
 s=12;
 s=4;
 load([testDir, '/', 'settings']);
@@ -43,7 +43,7 @@ for hw=hwList
                 for M = mList
                     mIndex = mIndex+1;
                     N=M;
-                    L=M;
+                    L=M+avg;
                     Nfft = 2^M;
                     fftl = 2^N;
                     thisXfErr = 0;
@@ -52,6 +52,7 @@ for hw=hwList
                     thisVarErr=0;
                     thisMaxErr = 0;   
                     thisUbound = 0;
+                    thisLbound = 0;
                     thisXterm = 0;
                     thisNumSims = numsims;
                     for i = 1:numsims
@@ -79,12 +80,17 @@ for hw=hwList
                             if hw==0
                                 Xf = Xf*2^blkexp;
                             end
+                            Xf = reshape(Xf,size(Xf2));
                             Xfe = real(Xf)-real(Xf2);
                             thisXfErr = thisXfErr + sum(Xfe.^2)/(Nfft*sum(xq.*conj(xq)));
                             Xfe = imag(Xf)-imag(Xf2);
                             thisXfErr = thisXfErr + sum(Xfe.^2)/(Nfft*sum(xq.*conj(xq)));
                             % thisXferr = thisXferr + Nfft*var(Xfe.*conj(Xfe))/(sum(xq.*conj(xq)));
                             % thisErr = thisErr + sum(abs(Px2_u-Px_u))/(sum(xq.*conj(xq))*Nfft);
+                            if L>N
+                                Px2_u = sum(Px2_u')'/2^(L-N);
+                            end
+                            xq = reshape(xq,[],1);
                             thisErr = thisErr + sum(abs(Px2_u-Px_u))/(sum(xq.*conj(xq))*Nfft);
                             thisExpErr = thisExpErr + sum(abs(Xf.*conj(Xf)-Xf2.*conj(Xf2)))...
                                 /(sum(xq.*conj(xq))*Nfft);
@@ -95,6 +101,7 @@ for hw=hwList
                             K = (1/Nfft)*sum(xq.*conj(xq));
                             % ubound(mIndex,impIndex,alphaIndex,i) = 2^(M+3)*(2^(-2*16)/12)/K
                             thisUbound = thisUbound + 2*2^(M+3)*(2^(-2*16)/12)/K;
+                            thisLbound = thisLbound + (M-2.5)^0.5*0.3*2^-32;
     %                          thisUbound = thisUbound + 2^(M+3)/K;
         %                     thisXterm = thisXterm + ...
         %                         (sum(real(Xf).*(real(Xf2)-real(Xf)))...
@@ -103,21 +110,23 @@ for hw=hwList
                                         (sum(xq.*conj(xq))*Nfft);
                         else 
                                thisNumSims = thisNumSims-1;
-                               message = 'Failed to load matfile'
+                               message = ['Failed to load matfile ', matfile]
                         end
                     end
                     xferr(mIndex,impIndex,alphaIndex) = thisXfErr/thisNumSims;
-                    xterm(mIndex,impIndex,alphaIndex) = thisXterm/thisNumSims;
+                    % xterm(mIndex,impIndex,alphaIndex) = thisXterm/thisNumSims;
                     ubound(mIndex,impIndex,alphaIndex) = thisUbound/thisNumSims;
+                    lbound(mIndex,impIndex,alphaIndex) = thisLbound/thisNumSims;
                     err(mIndex,impIndex,alphaIndex) = thisErr/thisNumSims;
-                    experr(mIndex,impIndex,alphaIndex) = thisExpErr/thisNumSims;
+                    % experr(mIndex,impIndex,alphaIndex) = thisExpErr/thisNumSims;
                     varErr(mIndex,impIndex,alphaIndex) = thisVarErr/thisNumSims;
-                    maxErr(mIndex,impIndex,alphaIndex) = thisMaxErr;
+                    % maxErr(mIndex,impIndex,alphaIndex) = thisMaxErr;
                     blkexpList(mIndex,impIndex,alphaIndex) = blkexp;
                 end
             end
         end
         imp(impIndex) = strcat(int2str(hw), int2str(width));
     end
-    save([testDir, '/', 'errAnalysis.mat'], 'xferr', 'xterm', 'ubound', 'err', 'experr', 'varErr', 'maxErr', 'blkexpList') 
+    % save([testDir, '/', 'errAnalysis.mat'], 'xferr', 'xterm', 'ubound', 'err', 'experr', 'varErr', 'maxErr', 'blkexpList') 
+    save([testDir, '/', 'errAnalysis.mat'], 'xferr', 'ubound', 'err', 'varErr', 'lbound', 'blkexpList') 
 end    

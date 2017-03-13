@@ -1,4 +1,4 @@
-function [x,findex,fs] = create_test_vector(source, Nfft, L, A, alpha, xmin, deltaf, dir, A2)
+function [x,findex,fs] = create_test_vector(source, Nfft, L, A, alpha, xmin, deltaf, dir, A2, color)
 % source:
 %   1: iq .dat
 %   2: Stephen's csv 
@@ -169,6 +169,10 @@ end
 findex = [1:Nfft]'*(fs)/(Nfft+1);
 xorig = x;
 x = x + alpha*randn(size(x)) + 1j*alpha*randn(size(x));
+if color
+    b=fir1(40,0.35);
+    x=filter(b,1,x);
+end
 if max(real(x))>=1 | max(imag(x))>=1 | max(real(x))<-1 | max(imag(x))<-1
     Error = 'ERROR: CLIPPING WILL OCCUR'
 end
